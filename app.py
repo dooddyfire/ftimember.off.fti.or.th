@@ -34,8 +34,6 @@ input("กรุณาเปลี่ยนหน้าเป็นหน้า�
 soup = BeautifulSoup(driver.page_source,'html.parser')
 
 lis = soup.find_all('tr',{'align':'left'})
-pagenext_lis =[ g.get_attribute('href') for g in driver.find_element(By.CSS_SELECTOR, "tr[style*='background-color:#284775']").find_elements(By.CSS_SELECTOR,'a')]
-print(pagenext_lis)
 for i in lis: 
     name = i.find('a').text 
     print('Name : ',name)
@@ -78,12 +76,14 @@ for i in lis:
 #    except: 
 #      continue
 
+driver.get(url)
+pagenext_lis =[ g for g in driver.find_element(By.CSS_SELECTOR, "tr[style*='background-color:#284775']").find_elements(By.CSS_SELECTOR,'a')]
 print(pagenext_lis)
-js_script = pagenext_lis[1]
-time.sleep(5)
-driver.execute_script(js_script)
-time.sleep(5)
 
+time.sleep(5)
+pagenext_lis[1].click()
+
+time.sleep(5)
 # round 2 - 9 
 
 for page in range(2,4): #11
@@ -130,10 +130,14 @@ for page in range(2,4): #11
     member_lis.append(members)
 
 # pagenext_lis[count].click()
-  js_script = pagenext_lis[page]
+  driver.get(url)
   time.sleep(5)
-  driver.execute_script(js_script)
+  pagenext_lis =[ g for g in driver.find_element(By.CSS_SELECTOR, "tr[style*='background-color:#284775']").find_elements(By.CSS_SELECTOR,'a')]
+  print(pagenext_lis)
+  
+  pagenext_lis[page].click()
   time.sleep(5)
+    # round 2 - 9 
   
 
 df = pd.DataFrame()
