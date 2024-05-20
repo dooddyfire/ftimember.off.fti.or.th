@@ -16,19 +16,26 @@ import schedule
 from datetime import datetime
 from selenium.webdriver.chrome.options import Options
 
-total = int(input("Total Page 1-9 : "))
 url = "https://ftimember.off.fti.or.th/_layouts/membersearch/result.aspx?ts=0&TextS="
 email_lis = []
 name_lis = []
 link_lis = []
+phone_lis = []
+loc_lis = []
+product_lis = []
+member_lis = []
 
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 
 driver.get(url)
 
+input("กรุณาเปลี่ยนหน้าเป็นหน้าที่จะดึงแล้วพิมพ์ 1 กด enter : ")
+
 soup = BeautifulSoup(driver.page_source,'html.parser')
 
 lis = soup.find_all('tr',{'align':'left'})
+pagenext_lis =[ g.get_attribute('href') for g in driver.find_element(By.CSS_SELECTOR, "tr[style*='background-color:#284775']").find_elements(By.CSS_SELECTOR,'a')]
+print(pagenext_lis)
 for i in lis: 
     name = i.find('a').text 
     print('Name : ',name)
@@ -38,19 +45,48 @@ for i in lis:
     print('Link : ',link)
     link_lis.append(link)
 
-    resx = requests.get(link)
-    soupx = BeautifulSoup(resx.content,'html.parser')
+    resx = driver.get(link)
+    soupx = BeautifulSoup(driver.page_source,'html.parser')
     
     address = soupx.find('span',{'id':'addr_email'}).find('a')['href']
     print(address)
     email_lis.append(address)
 
-pagenext = driver.find_elements(By.CSS_SELECTOR,'tr')[-1].find_elements(By.CSS_SELECTOR,'td')[1]
+    phone = soupx.find('span',{'id':'addr_telephone'}).text 
+    print(phone)
+    phone_lis.append(phone)
 
-pagenext.click()
+    loc = soupx.find('span',{'id':'comp_address'}).text 
+    print(loc)
+    loc_lis.append(loc)
+
+    product = driver.find_elements(By.CSS_SELECTOR,'table[border="0"]')[0].text.replace("ผลิตภัณฑ์และบริการ :","").strip()
+    print(product)
+    product_lis.append(product)
+
+    members = " ".join([ c.text for c in driver.find_elements(By.CSS_SELECTOR,'table')[4].find_elements(By.CSS_SELECTOR,'tr')[1].find_elements(By.CSS_SELECTOR,'td')])
+    print(members)
+    member_lis.append(members)
+
+
+#-- page 2 
+# for x in driver.find_elements(By.CSS_SELECTOR,'tr')[-1].find_elements(By.CSS_SELECTOR,'td'): 
+#    try:
+#      print(x.get_attribute('innerHTML'))
+#      elem = x.find_element(By.XPATH,).get_attribute('src')
+#      pagenext_lis.append(elem)
+#    except: 
+#      continue
+
+print(pagenext_lis)
+js_script = pagenext_lis[1]
+time.sleep(5)
+driver.execute_script(js_script)
+time.sleep(5)
 
 # round 2 - 9 
-for page in range(total):
+
+for page in range(2,4): #11
 
   # url = "https://ftimember.off.fti.or.th/_layouts/membersearch/result.aspx?ts=0&TextS="
 
@@ -68,23 +104,46 @@ for page in range(total):
     print('Link : ',link)
     link_lis.append(link)
 
-    resx = requests.get(link)
-    soupx = BeautifulSoup(resx.content,'html.parser')
+    resx = driver.get(link)
+    soupx = BeautifulSoup(driver.page_source,'html.parser')
     
     #email
     address = soupx.find('span',{'id':'addr_email'}).find('a')['href']
     print(address)
     email_lis.append(address)
 
-  pagenext2 = driver.find_elements(By.CSS_SELECTOR,'tr')[-1].find_elements(By.CSS_SELECTOR,'td')[1]
-  pagenext2.click()
+    phone = soupx.find('span',{'id':'addr_telephone'}).text 
+    print(phone)
+    phone_lis.append(phone)
+
+
+    loc = soupx.find('span',{'id':'comp_address'}).text 
+    print(loc)
+    loc_lis.append(loc)
+
+    product = driver.find_elements(By.CSS_SELECTOR,'table[border="0"]')[0].text.replace("ผลิตภัณฑ์และบริการ :","").strip()
+    print(product)
+    product_lis.append(product)
+
+    members = " ".join([ c.text for c in driver.find_elements(By.CSS_SELECTOR,'table')[4].find_elements(By.CSS_SELECTOR,'tr')[1].find_elements(By.CSS_SELECTOR,'td')])
+    print(members)
+    member_lis.append(members)
+
+# pagenext_lis[count].click()
+  js_script = pagenext_lis[page]
+  time.sleep(5)
+  driver.execute_script(js_script)
+  time.sleep(5)
+  
 
 df = pd.DataFrame()
 df['ชื่อบริษัท'] = name_lis 
-
+df['เบอร์โทร'] = phone_lis 
+df['ที่อยู่'] = loc_lis 
+df['ผลิตภัณฑ์และบริการ'] = product_lis 
+df['สมาชิก'] = member_lis
 df['Email'] = email_lis 
-
 df['Link'] = link_lis 
 
-df.to_excel("company_full9to10.xlsx")
+df.to_excel("company_full1to2.xlsx")
 print("Finish Scrape")
