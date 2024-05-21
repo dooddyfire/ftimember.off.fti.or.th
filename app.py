@@ -12,7 +12,6 @@ from bs4 import BeautifulSoup
 import time
 import re 
 import pandas as pd 
-import schedule
 from datetime import datetime
 from selenium.webdriver.chrome.options import Options
 
