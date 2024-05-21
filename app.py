@@ -35,36 +35,66 @@ soup = BeautifulSoup(driver.page_source,'html.parser')
 
 lis = soup.find_all('tr',{'align':'left'})
 for i in lis: 
-    name = i.find('a').text 
-    print('Name : ',name)
-    name_lis.append(name)
+    try:
+      name = i.find('a').text 
+      print('Name : ',name)
+      name_lis.append(name)
+    except: 
+       
+       print("ไม่มี")
+       name_lis.append("ไม่มี")
 
-    link = "https://ftimember.off.fti.or.th/_layouts/membersearch/"+i.find('a')['href']
-    print('Link : ',link)
-    link_lis.append(link)
+    try:
+      link = "https://ftimember.off.fti.or.th/_layouts/membersearch/"+i.find('a')['href']
+      print('Link : ',link)
+      link_lis.append(link)
+    except: 
+       print("ไม่มี")
+       link_lis.append("ไม่มี")
+
 
     resx = driver.get(link)
     soupx = BeautifulSoup(driver.page_source,'html.parser')
     
-    address = soupx.find('span',{'id':'addr_email'}).find('a')['href']
-    print(address)
-    email_lis.append(address)
+    try:
+      address = soupx.find('span',{'id':'addr_email'}).find('a')['href']
+      print(address)
+      email_lis.append(address)
+    except: 
+       print("ไม่มี")
+       email_lis.append("ไม่มี")
 
-    phone = soupx.find('span',{'id':'addr_telephone'}).text 
-    print(phone)
-    phone_lis.append(phone)
+    try:
+      phone = soupx.find('span',{'id':'addr_telephone'}).text 
+      print(phone)
+      phone_lis.append(phone)
+    except: 
+      print("ไม่มี")
+      phone_lis.append("ไม่มี")
 
-    loc = soupx.find('span',{'id':'comp_address'}).text 
-    print(loc)
-    loc_lis.append(loc)
+    try:
+      loc = soupx.find('span',{'id':'comp_address'}).text 
+      print(loc)
+      loc_lis.append(loc)
+    except: 
+      print("ไม่มี")
+      loc_lis.append("ไม่มี")
 
-    product = driver.find_elements(By.CSS_SELECTOR,'table[border="0"]')[0].text.replace("ผลิตภัณฑ์และบริการ :","").strip()
-    print(product)
-    product_lis.append(product)
-
-    members = " ".join([ c.text for c in driver.find_elements(By.CSS_SELECTOR,'table')[4].find_elements(By.CSS_SELECTOR,'tr')[1].find_elements(By.CSS_SELECTOR,'td')])
-    print(members)
-    member_lis.append(members)
+    try:
+      product = driver.find_elements(By.CSS_SELECTOR,'table[border="0"]')[0].text.replace("ผลิตภัณฑ์และบริการ :","").strip()
+      print(product)
+      product_lis.append(product)
+    except: 
+      print("ไม่มี")
+      product_lis.append("ไม่มี")
+    
+    try:
+      members = " ".join([ c.text for c in driver.find_elements(By.CSS_SELECTOR,'table')[4].find_elements(By.CSS_SELECTOR,'tr')[1].find_elements(By.CSS_SELECTOR,'td')])
+      print(members)
+      member_lis.append(members)
+    except:
+      print("ไม่มี")
+      member_lis.append("ไม่มี")
 
 
 #-- page 2 
@@ -86,7 +116,7 @@ pagenext_lis[1].click()
 time.sleep(5)
 # round 2 - 9 
 
-for page in range(2,4): #11
+for page in range(2,11): #11
 
   # url = "https://ftimember.off.fti.or.th/_layouts/membersearch/result.aspx?ts=0&TextS="
 
@@ -94,40 +124,67 @@ for page in range(2,4): #11
 
   lis = soup.find_all('tr',{'align':'left'})
   for i in lis: 
-    #name
-    name = i.find('a').text 
-    print('Name : ',name)
-    name_lis.append(name)
+      try:
+        name = i.find('a').text 
+        print('Name : ',name)
+        name_lis.append(name)
+      except: 
+        
+        print("ไม่มี")
+        name_lis.append("ไม่มี")
 
-    # link
-    link = "https://ftimember.off.fti.or.th/_layouts/membersearch/"+i.find('a')['href']
-    print('Link : ',link)
-    link_lis.append(link)
-
-    resx = driver.get(link)
-    soupx = BeautifulSoup(driver.page_source,'html.parser')
-    
-    #email
-    address = soupx.find('span',{'id':'addr_email'}).find('a')['href']
-    print(address)
-    email_lis.append(address)
-
-    phone = soupx.find('span',{'id':'addr_telephone'}).text 
-    print(phone)
-    phone_lis.append(phone)
+      try:
+        link = "https://ftimember.off.fti.or.th/_layouts/membersearch/"+i.find('a')['href']
+        print('Link : ',link)
+        link_lis.append(link)
+      except: 
+        print("ไม่มี")
+        link_lis.append("ไม่มี")
 
 
-    loc = soupx.find('span',{'id':'comp_address'}).text 
-    print(loc)
-    loc_lis.append(loc)
+      resx = driver.get(link)
+      soupx = BeautifulSoup(driver.page_source,'html.parser')
+      
+      try:
+        address = soupx.find('span',{'id':'addr_email'}).find('a')['href']
+        print(address)
+        email_lis.append(address)
+      except: 
+        print("ไม่มี")
+        email_lis.append("ไม่มี")
 
-    product = driver.find_elements(By.CSS_SELECTOR,'table[border="0"]')[0].text.replace("ผลิตภัณฑ์และบริการ :","").strip()
-    print(product)
-    product_lis.append(product)
+      try:
+        phone = soupx.find('span',{'id':'addr_telephone'}).text 
+        print(phone)
+        phone_lis.append(phone)
+      except: 
+        print("ไม่มี")
+        phone_lis.append("ไม่มี")
 
-    members = " ".join([ c.text for c in driver.find_elements(By.CSS_SELECTOR,'table')[4].find_elements(By.CSS_SELECTOR,'tr')[1].find_elements(By.CSS_SELECTOR,'td')])
-    print(members)
-    member_lis.append(members)
+      try:
+        loc = soupx.find('span',{'id':'comp_address'}).text 
+        print(loc)
+        loc_lis.append(loc)
+      except: 
+        print("ไม่มี")
+        loc_lis.append("ไม่มี")
+
+      try:
+        product = driver.find_elements(By.CSS_SELECTOR,'table[border="0"]')[0].text.replace("ผลิตภัณฑ์และบริการ :","").strip()
+        print(product)
+        product_lis.append(product)
+      except: 
+        print("ไม่มี")
+        product_lis.append("ไม่มี")
+      
+      try:
+        members = " ".join([ c.text for c in driver.find_elements(By.CSS_SELECTOR,'table')[4].find_elements(By.CSS_SELECTOR,'tr')[1].find_elements(By.CSS_SELECTOR,'td')])
+        print(members)
+        member_lis.append(members)
+      except:
+        print("ไม่มี")
+        member_lis.append("ไม่มี")
+
 
 # pagenext_lis[count].click()
   driver.get(url)
@@ -135,8 +192,12 @@ for page in range(2,4): #11
   pagenext_lis =[ g for g in driver.find_element(By.CSS_SELECTOR, "tr[style*='background-color:#284775']").find_elements(By.CSS_SELECTOR,'a')]
   print(pagenext_lis)
   
-  pagenext_lis[page].click()
-  time.sleep(5)
+  try:
+    pagenext_lis[page].click()
+    time.sleep(5)
+  except IndexError: 
+    print("Exit Loop Out Of Index")
+    break
     # round 2 - 9 
   
 
@@ -149,5 +210,5 @@ df['สมาชิก'] = member_lis
 df['Email'] = email_lis 
 df['Link'] = link_lis 
 
-df.to_excel("company_full1to2.xlsx")
+df.to_excel("company_full11to20.xlsx")
 print("Finish Scrape")
