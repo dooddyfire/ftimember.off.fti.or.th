@@ -27,10 +27,16 @@ member_lis = []
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 
 driver.get(url)
+first_tab_handle = driver.current_window_handle
 
 input("กรุณาเปลี่ยนหน้าเป็นหน้าที่จะดึงแล้วพิมพ์ 1 กด enter : ")
 
 soup = BeautifulSoup(driver.page_source,'html.parser')
+
+pagenext_lis =[ g for g in driver.find_element(By.CSS_SELECTOR, "tr[style*='background-color:#284775']").find_elements(By.CSS_SELECTOR,'a')]
+
+# Open a new tab
+driver.execute_script("window.open('');")
 
 lis = soup.find_all('tr',{'align':'left'})
 for i in lis: 
@@ -52,7 +58,16 @@ for i in lis:
        link_lis.append("ไม่มี")
 
 
-    resx = driver.get(link)
+
+
+
+    # Switch to the new tab
+    driver.switch_to.window(driver.window_handles[1])
+
+    # Navigate to the desired URL in the new tab
+    driver.get(link)
+
+
     soupx = BeautifulSoup(driver.page_source,'html.parser')
     
     try:
@@ -105,15 +120,16 @@ for i in lis:
 #    except: 
 #      continue
 
-driver.get(url)
-pagenext_lis =[ g for g in driver.find_element(By.CSS_SELECTOR, "tr[style*='background-color:#284775']").find_elements(By.CSS_SELECTOR,'a')]
+
+time.sleep(5)
+# pagenext_lis[1].click()
+driver.switch_to.window(first_tab_handle)
+
 print(pagenext_lis)
 
-time.sleep(5)
 pagenext_lis[1].click()
-
 time.sleep(5)
-# round 2 - 9 
+
 
 for page in range(2,11): #11
 
@@ -141,7 +157,11 @@ for page in range(2,11): #11
         link_lis.append("ไม่มี")
 
 
-      resx = driver.get(link)
+        # Switch to the new tab
+      driver.switch_to.window(driver.window_handles[1])
+
+        # Navigate to the desired URL in the new tab
+      driver.get(link)
       soupx = BeautifulSoup(driver.page_source,'html.parser')
       
       try:
@@ -186,10 +206,11 @@ for page in range(2,11): #11
 
 
 # pagenext_lis[count].click()
-  driver.get(url)
-  time.sleep(5)
+  driver.switch_to.window(first_tab_handle)
   pagenext_lis =[ g for g in driver.find_element(By.CSS_SELECTOR, "tr[style*='background-color:#284775']").find_elements(By.CSS_SELECTOR,'a')]
-  print(pagenext_lis)
+
+  time.sleep(5)
+
   
   try:
     pagenext_lis[page].click()
@@ -209,5 +230,5 @@ df['สมาชิก'] = member_lis
 df['Email'] = email_lis 
 df['Link'] = link_lis 
 
-df.to_excel("company_full11to20.xlsx")
+df.to_excel("company_full41to50.xlsx")
 print("Finish Scrape")
